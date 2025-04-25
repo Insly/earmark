@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 class CreateAccrualsTable extends Migration
 {
@@ -13,10 +14,13 @@ class CreateAccrualsTable extends Migration
      */
     public function up()
     {
-        Schema::create('earmark_accrual', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->timestamps();
-        });
+        //fixes the issue of legacy databases already having the
+        if (!Schema::hasTable('earmark_accrual')) {
+            Schema::create('earmark_accrual', function (Blueprint $table) {
+                $table->bigIncrements('id');
+                $table->timestamps();
+            });
+        }
     }
 
     /**
@@ -26,6 +30,9 @@ class CreateAccrualsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('accruals');
+        $legacyMigration = DB::table('migrations')->where('migration', '2019_05_27_062621_create_accruals_table')->first();
+        if(!$legacyMigration){
+            Schema::dropIfExists('earmark_accrual');
+        }
     }
 }

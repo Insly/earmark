@@ -13,15 +13,17 @@ class CreateEarmarkTable extends Migration
      */
     public function up()
     {
-        Schema::create('earmark', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer(config('earmark.columns.digit'));
-            $table->string(config('earmark.columns.group'))->nullable();
-            $table->timestamps();
+        if (!Schema::hasTable('earmark')) {
+            Schema::create('earmark', function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer(config('earmark.columns.digit'));
+                $table->string(config('earmark.columns.group'))->nullable();
+                $table->timestamps();
 
-            $table->index(config('earmark.columns.digit'));
-            $table->index(config('earmark.columns.group'));
-        });
+                $table->index(config('earmark.columns.digit'));
+                $table->index(config('earmark.columns.group'));
+            });
+        }
 
         // Poing\Earmark\Models\EarMark::max('digit')
         // Poing\Earmark\Models\EarMark::where('type','alpha')->max('digit')
@@ -34,6 +36,9 @@ class CreateEarmarkTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('earmark');
+        $legacyMigration = DB::table('migrations')->where('migration', '2019_05_22_090330_create_earmark_table')->first();
+        if(!$legacyMigration) {
+            Schema::dropIfExists('earmark');
+        }
     }
 }
