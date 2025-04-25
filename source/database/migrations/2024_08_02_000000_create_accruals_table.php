@@ -30,9 +30,6 @@ class CreateAccrualsTable extends Migration
      */
     public function down()
     {
-        $legacyMigration = DB::table('migrations')->where('migration', '2019_05_27_062621_create_accruals_table')->first();
-        if(!$legacyMigration){
-            Schema::dropIfExists('earmark_accrual');
-        }
+        Schema::dropIfExists('earmark_accrual');
     }
 }

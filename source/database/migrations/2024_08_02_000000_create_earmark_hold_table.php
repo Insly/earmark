@@ -37,9 +37,6 @@ class CreateEarmarkHoldTable extends Migration
      */
     public function down()
     {
-        $legacyMigration = DB::table('migrations')->where('migration', '2019_05_22_090330_create_earmark_hold_table')->first();
-        if(!$legacyMigration) {
-            Schema::dropIfExists('earmark_hold');
-        }
+        Schema::dropIfExists('earmark_hold');
     }
 }
